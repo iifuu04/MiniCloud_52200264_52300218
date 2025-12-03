@@ -1,0 +1,47 @@
+# Container and Docker related files
+
+# Docker logs
+*.log
+docker-logs/
+logs/
+
+# Container temporary files
+*.tmp
+*.temp
+
+# Docker build cache (optional, uncomment if needed)
+# .docker/
+
+# Environment files (may contain sensitive data)
+.env
+.env.local
+.env.production
+.env.development
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node modules (if any in root)
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.tar
+*.tar.gz
+
+
+context/
+
+auth/data/h2/
+logging/grafana-data/
+storage-server/data/

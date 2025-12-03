@@ -1,0 +1,197 @@
+services:
+  #ns          IN  A   172.31.0.8
+  # frontend-1  IN  A   172.31.0.2
+  # frontend-2  IN  A   172.31.0.3
+  # backend     IN  A   172.31.0.7
+  # auth        IN  A   172.31.0.6
+  # database    IN  A   172.31.0.10
+  # storage     IN  A   172.31.0.4
+  web-frontend-server1:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: 52200264/frontend:latest
+    ports:
+      - "3001:3000"
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.2
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+
+  web-frontend-server2:
+    image: 52200264/frontend:latest
+    ports:
+      - "3002:3000"
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.3
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+
+  #Flask (backend) application
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: 52200264/backend:latest
+    ports:
+      - "8081:8081"
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.7
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - OIDC_ISSUER=http://auth:8080/auth/realms/master
+      - OIDC_AUDIENCE=backend
+      - DB_HOST=database
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=Mini_Cloud
+      - DB_POOL_LIMIT=5
+
+  database:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.10
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=Mini_Cloud
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_SSL_MODE=DISABLED
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - ./database/init/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql
+    restart: unless-stopped
+
+  auth:
+    image: quay.io/keycloak/keycloak:26.4.2
+    ports:
+      - "8082:8080"
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.6
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    command: [
+      "start-dev",
+      "--http-relative-path=/auth",
+      "--hostname-strict=false"
+    ]
+    volumes:
+      - ./auth/data:/opt/keycloak/data
+    restart: unless-stopped
+
+  storage-server:
+    build:
+      context: ./storage-server
+      dockerfile: Dockerfile
+    image: 52200264/storage-server:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.4
+    restart: unless-stopped
+    environment:
+      - STORAGE_PATH=/data/storage
+      - MINIO_ROOT_USER=admin123
+      - MINIO_ROOT_PASSWORD=strongpass123
+    volumes:
+    - ./storage-server/data:/data
+
+
+  # (Bind9) DNS server
+  dns-server:
+    build:
+      context: ./dns-server
+      dockerfile: Dockerfile
+    image: 52200264/dns-server:latest
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.8
+    volumes:
+      - ./dns-server/zones:/etc/bind/zones
+      - ./dns-server/named.conf:/etc/bind/named.conf
+    restart: unless-stopped
+
+  # monitoring-server:
+  monitoring-node-exporter-server:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.9
+    restart: unless-stopped
+  
+  monitoring-prometheus-server: 
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.11
+    restart: unless-stopped
+
+  # logging-server (grafana):
+  logging-server:
+    image: grafana/grafana:latest
+    ports:
+      - "3120:3000"
+    volumes:
+    - ./logging/provisioning/:/etc/grafana/provisioning/
+    - ./logging/grafana-data:/var/lib/grafana
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.12
+    restart: unless-stopped
+
+  # load-balancer:
+  proxy:
+    build:
+      context: ./load_balancer
+      dockerfile: Dockerfile
+    image: nginx:stable
+    depends_on:
+      - web-frontend-server1
+      - web-frontend-server2
+      - backend
+      - auth
+      - storage-server
+    ports:
+      - "80:80"
+    volumes:
+      - ./load_balancer/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./frontend/public/blog:/var/www/blog-static:ro
+    networks:
+      cloud-net:
+        ipv4_address: 172.31.0.13
+    restart: unless-stopped
+
+networks:
+  cloud-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.0.0/24

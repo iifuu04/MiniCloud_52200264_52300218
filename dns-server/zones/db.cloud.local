@@ -1,0 +1,11 @@
+$TTL 1H
+@   IN  SOA ns.cloud.local. admin.cloud.local. (1 1H 15M 1W 1H)
+    IN  NS   ns.cloud.local.
+
+ns          IN  A   172.31.0.8
+frontend-1  IN  A   172.31.0.2
+frontend-2  IN  A   172.31.0.3
+backend     IN  A   172.31.0.7
+auth        IN  A   172.31.0.6
+database    IN  A   172.31.0.10
+storage     IN  A   172.31.0.4

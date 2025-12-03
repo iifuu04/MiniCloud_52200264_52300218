@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog 1 - Ngày đầu tiên</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/2.0.0/modern-normalize.min.css"
+    />
+    <style>
+      body {
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #0b1d12;
+        color: #e8f5e9;
+        margin: 0;
+        padding: 2rem;
+      }
+      .site-header {
+        max-width: 900px;
+        margin: 0 auto 1.5rem;
+        padding: 1rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #214d32;
+      }
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: #ffffff;
+        font-size: 1.2rem;
+      }
+      .logo-icon {
+        font-size: 1.4rem;
+      }
+      .site-nav {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .site-nav a {
+        text-decoration: none;
+        color: #a3d9a5;
+        font-weight: 500;
+      }
+      .site-nav a:hover {
+        color: #66ff99;
+      }
+      .shell {
+        max-width: 760px;
+        margin: auto;
+        background: #143a20;
+        border-radius: 26px;
+        padding: 2.5rem;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+        border: 1px solid #214d32;
+      }
+      h1 {
+        font-size: 2.4rem;
+        margin-bottom: 1rem;
+        color: #ffffff;
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        color: #a3d9a5;
+      }
+      img {
+        width: 100%;
+        border-radius: 20px;
+        margin: 1rem 0 2rem;
+      }
+      p,
+      ul {
+        line-height: 1.8;
+      }
+      ul {
+        padding-left: 1.2rem;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        color: #66ff99;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      .site-footer {
+        max-width: 900px;
+        margin: 2rem auto 0;
+        padding: 1.5rem 0;
+        border-top: 1px solid #214d32;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.95rem;
+        color: #a3d9a5;
+      }
+      .footer-links {
+        display: flex;
+        gap: 1rem;
+      }
+      .footer-links a {
+        color: #66ff99;
+        text-decoration: none;
+      }
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="/">
+        <span class="logo-icon">🌿</span>
+        <span>Sống Xanh</span>
+      </a>
+      <nav class="site-nav">
+        <a href="/">Trang Chủ</a>
+        <a href="/blog-static">Blog-Static</a>
+        <a href="/#contact">Liên Hệ</a>
+      </nav>
+    </header>
+    <section class="shell">
+      <a class="back-link" href="/blog-static">← Quay lại Blog-Static</a>
+      <h1>Nhật ký 30 ngày sống xanh</h1>
+      <div class="meta">
+        <span>25 Tháng 11, 2025</span>
+        <span>Lê Thị Mỹ Phụng</span>
+        <span>Chủ đề: Sống Xanh</span>
+      </div>
+      <img src="/image1.jpg" alt="image1" />
+      <p>
+        Ba mươi ngày trước mình bắt đầu hành trình sống xanh: mỗi ngày chăm cây, giảm rác thải và ghi lại.
+        Mục tiêu là có khu vườn mini và chia sẻ trải nghiệm cho mọi người.
+      </p>
+      <ul>
+        <li><strong>Tuần 1:</strong> Bắt đầu trồng thảo mộc, đọc về đất - ánh sáng - nước.</li>
+        <li><strong>Tuần 2:</strong> Thiết kế chậu tái chế, làm phân ủ từ rác hữu cơ.</li>
+        <li><strong>Tuần 3:</strong> Quan sát tăng trưởng, thêm tưới sương và đo độ ẩm.</li>
+        <li><strong>Tuần 4:</strong> Chụp ảnh vườn mini và viết blog chia sẻ.</li>
+      </ul>
+      <p>
+        Việc chăm cây hàng ngày khiến mình cảm nhận được rằng: sống xanh không khó, chỉ cần kiên nhẫn và
+        yêu thiên nhiên. Hy vọng câu chuyện này truyền cảm hứng cho bạn bắt đầu một góc xanh của riêng mình 🌱
+      </p>
+      <a class="back-link" href="/">← Quay lại</a>
+    </section>
+    <footer class="site-footer">
+      <p>&copy; 2025 Sống Xanh · HTML tĩnh phục vụ bởi Nginx alias.</p>
+      <div class="footer-links">
+        <a href="/blog-static">Quay lại Blog-Static</a>
+        <a href="/blog-static/blog2.html">Bài 2</a>
+        <a href="/blog-static/blog3.html">Bài 3</a>
+      </div>
+    </footer>
+  </body>
+</html>
